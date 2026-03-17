@@ -12,33 +12,34 @@ import jakarta.persistence.Table;
 public class Pais {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Para autoincrementar    
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Para autoincrementar
     private Integer id;
     @Column
     private String nombre;
     @Column
-    private boolean miembroOnu;
-    @Column
-    private String moneda;// nombre y simbolo
-    @Column
-    private String capital;//la capital del pais
-    @Column
-    private String region;
-    @Column
-    private String banderas;
-    @Column
-    private Integer poblacion;
+    private String bandera;
 
-    public Pais(Integer id, String nombre, boolean miembroOnu, String moneda, String capital, String region, String banderas,
-            Integer poblacion) {
-        this.id=id;
+    @Column
+    private String motivoViaje;
+    @Column
+    private String zona;
+    @Column
+    private Integer presupuesto;
+    @Column
+    private Integer prioridad;
+    @Column
+    private String notasPersonales;
+
+    public Pais(Integer id, String nombre, String bandera, String motivoViaje, String zona, Integer presupuesto,
+            Integer prioridad, String notasPersonales) {
+        this.id = id;
         this.nombre = nombre;
-        this.miembroOnu = miembroOnu;
-        this.moneda = moneda;
-        this.capital = capital;
-        this.region = region;
-        this.banderas = banderas;
-        this.poblacion = poblacion;
+        this.bandera = bandera;
+        this.motivoViaje = motivoViaje;
+        this.zona = zona;
+        this.presupuesto = presupuesto;
+        this.prioridad = prioridad;
+        this.notasPersonales = notasPersonales;
     }
 
     public Pais(){
@@ -61,52 +62,52 @@ public class Pais {
         this.nombre = nombre;
     }
 
-    public boolean isMiembroOnu() {
-        return miembroOnu;
+    public String getBandera() {
+        return bandera;
     }
 
-    public void setMiembroOnu(boolean miembroOnu) {
-        this.miembroOnu = miembroOnu;
+    public void setBandera(String bandera) {
+        this.bandera = bandera;
     }
 
-    public String getMoneda() {
-        return moneda;
+    public String getMotivoViaje() {
+        return motivoViaje;
     }
 
-    public void setMoneda(String moneda) {
-        this.moneda = moneda;
+    public void setMotivoViaje(String motivoViaje) {
+        this.motivoViaje = motivoViaje;
     }
 
-    public String getCapital() {
-        return capital;
+    public String getZona() {
+        return zona;
     }
 
-    public void setCapital(String capital) {
-        this.capital = capital;
+    public void setZona(String zona) {
+        this.zona = zona;
     }
 
-    public String getRegion() {
-        return region;
+    public Integer getPresupuesto() {
+        return presupuesto;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setPresupuesto(Integer presupuesto) {
+        this.presupuesto = presupuesto;
     }
 
-    public String getBanderas() {
-        return banderas;
+    public Integer getPrioridad() {
+        return prioridad;
     }
 
-    public void setBanderas(String banderas) {
-        this.banderas = banderas;
+    public void setPrioridad(Integer prioridad) {
+        this.prioridad = prioridad;
     }
 
-    public Integer getPoblacion() {
-        return poblacion;
+    public String getNotasPersonales() {
+        return notasPersonales;
     }
 
-    public void setPoblacion(Integer poblacion) {
-        this.poblacion = poblacion;
+    public void setNotasPersonales(String notasPersonales) {
+        this.notasPersonales = notasPersonales;
     }
 
 }

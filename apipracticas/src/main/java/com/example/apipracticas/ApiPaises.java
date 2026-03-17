@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("apipracticas/paises")
-public class apiPaises {
+@RequestMapping("/api/paises")
+public class ApiPaises {
 
     @Autowired
-    servicioPaises serv;
+    private servicioPaises serv;
 
     @GetMapping
     public List<Pais> getAllPaises() {
@@ -29,21 +29,18 @@ public class apiPaises {
         return serv.getPais(id);
     }
 
-    //espera un JSON en el body de la petición
     @PostMapping
-    public void guardarPais(@RequestBody Pais pais) {
-        serv.guardaPais(pais);
+    public Pais guardarPais(@RequestBody Pais pais) {  //
+        return serv.guardaPais(pais);
     }
 
-    // @PutMapping("/{id}")  // PUT para actualizar
-    // public void actualizarPais(@PathVariable Integer id, @RequestBody Pais pais) {
-    //     serv.setPais(id, pais);
-    // }
+    @PutMapping("/{id}")
+    public Pais actualizarPais(@PathVariable Integer id, @RequestBody Pais pais) {
+        return serv.actualizarPais(id, pais);  // 👈 Descomenta y crea este método
+    }
 
     @DeleteMapping("/{id}")
-    public void eliminarPais(Integer id) {
-        Pais p=serv.getPais(id);
-        serv.eliminarPais(p);
+    public void eliminarPais(@PathVariable Integer id) {  // 👈 AÑADE @PathVariable
+        serv.eliminarPais(serv.getPais(id));
     }
-
 }
