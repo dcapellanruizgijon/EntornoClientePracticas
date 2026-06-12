@@ -1,0 +1,11 @@
+// Import Bootstrap's SCSS so we can override variables if needed
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+  background: #f8f9fa;
+}
+
+.hover-card:hover{
+  transform: translateY(-6px);
+  transition: transform 0.15s ease-in-out;
+}

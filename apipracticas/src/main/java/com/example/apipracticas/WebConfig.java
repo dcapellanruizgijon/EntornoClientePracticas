@@ -9,9 +9,15 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  //    /** para cubrir todas las rutas
-                .allowedOrigins("https://ruix.iesruizgijon.es") //para permitir peticiones desde otro servidor
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
+        registry.addMapping("/**")  // /** para cubrir todas las rutas
+                .allowedOrigins(
+                    "https://ruix.iesruizgijon.es",
+                    "http://localhost:8080",
+                    "http://localhost:5432",
+                    "http://localhost:5174",
+                    "http://localhost:5173"
+                ) // permitir peticiones desde los orígenes listados
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

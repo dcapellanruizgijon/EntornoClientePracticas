@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+// http://localhost:8080/api/paises
 @RestController
 @RequestMapping("/api/paises")
 public class ApiPaises {
@@ -36,11 +36,11 @@ public class ApiPaises {
 
     @PutMapping("/{id}")
     public Pais actualizarPais(@PathVariable Integer id, @RequestBody Pais pais) {
-        return serv.actualizarPais(id, pais);  // 👈 Descomenta y crea este método
+        return serv.actualizarPais(id, pais);  
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPais(@PathVariable Integer id) {  // 👈 AÑADE @PathVariable
+    public void eliminarPais(@PathVariable Integer id) {  
         serv.eliminarPais(serv.getPais(id));
     }
 }
