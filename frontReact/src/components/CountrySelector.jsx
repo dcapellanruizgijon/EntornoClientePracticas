@@ -16,7 +16,7 @@ export default function CountrySelector(){
   const cargar = () => {
     setCargando(true)
     fetch(
-  'https://api.restcountries.com/countries/v5/all?fields=name,unMember,currencies,capital,region,flags,population',
+  'https://api.restcountries.com/countries/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population',
   { headers: { 'Authorization': `Bearer ${API_KEY}` } }
 )
        .then(response => {
