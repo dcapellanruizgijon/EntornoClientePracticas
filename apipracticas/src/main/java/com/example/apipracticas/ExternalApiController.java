@@ -13,16 +13,30 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/api/external")
 public class ExternalApiController {
 
-    private static final String RESTCOUNTRIES_URL = "https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population";
+    // Intentar varias versiones públicas hasta obtener datos válidos
+    private static final String[] CANDIDATE_URLS = new String[]{
+        "https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population",
+        "https://restcountries.com/v5/all?fields=name,unMember,currencies,capital,region,flags,population",
+        "https://restcountries.com/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population"
+    };
 
     @GetMapping("/paises")
     public ResponseEntity<Object> getPaises() {
         RestTemplate rt = new RestTemplate();
-        // Obtener como array de objetos para devolver JSON nativo
-        Object[] resp = rt.getForObject(RESTCOUNTRIES_URL, Object[].class);
-        if (resp == null) {
-            return ResponseEntity.status(502).body("[]");
+        Exception lastEx = null;
+        for (String url : CANDIDATE_URLS) {
+            try {
+                Object[] resp = rt.getForObject(url, Object[].class);
+                if (resp != null && resp.length > 0) {
+                    return ResponseEntity.ok().body(resp);
+                }
+            } catch (Exception ex) {
+                lastEx = ex;
+                // probar siguiente URL
+            }
         }
-        return ResponseEntity.ok().body(resp);
+        // Si llegamos aquí no obtuvimos datos válidos
+        if (lastEx != null) lastEx.printStackTrace();
+        return ResponseEntity.status(502).body("[]");
     }
 }
