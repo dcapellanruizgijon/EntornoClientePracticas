@@ -16,13 +16,13 @@ public class ExternalApiController {
     private static final String RESTCOUNTRIES_URL = "https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population";
 
     @GetMapping("/paises")
-    public ResponseEntity<String> getPaises() {
+    public ResponseEntity<Object> getPaises() {
         RestTemplate rt = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        // aceptar JSON
-        headers.add("Accept", "application/json");
-        HttpEntity<Void> request = new HttpEntity<>(headers);
-        ResponseEntity<String> resp = rt.exchange(RESTCOUNTRIES_URL, HttpMethod.GET, request, String.class);
-        return ResponseEntity.status(resp.getStatusCode()).body(resp.getBody());
+        // Obtener como array de objetos para devolver JSON nativo
+        Object[] resp = rt.getForObject(RESTCOUNTRIES_URL, Object[].class);
+        if (resp == null) {
+            return ResponseEntity.status(502).body("[]");
+        }
+        return ResponseEntity.ok().body(resp);
     }
 }
