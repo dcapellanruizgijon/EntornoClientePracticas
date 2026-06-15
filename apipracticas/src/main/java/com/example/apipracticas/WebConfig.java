@@ -19,7 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:8080",
                         "http://localhost:5432",
                         "http://localhost:5174",
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://entornoclientepracticas-react.onrender.com"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
