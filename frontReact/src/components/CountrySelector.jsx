@@ -1,4 +1,3 @@
-++ /var/www/html/clientePracticas/frontReact/src/components/CountrySelector.jsx
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
