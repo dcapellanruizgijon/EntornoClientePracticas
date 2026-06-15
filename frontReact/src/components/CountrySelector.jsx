@@ -7,14 +7,24 @@ export default function CountrySelector(){
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const API_KEY = process.env.REACT_APP_RESTCOUNTRIES_API_KEY;
 
   useEffect(()=>{ cargar() }, [])
 
+    
+
   const cargar = () => {
     setCargando(true)
-    fetch('https://restcountries.com/v3.1/all?fields=name,flags,capital,region,population,currencies,unMember')
-      .then(r => r.json())
-      .then(r => r.json())
+    fetch(
+  'https://api.restcountries.com/countries/v5/all?fields=name,unMember,currencies,capital,region,flags,population',
+  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+)
+       .then(response => {
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+      return response.json();
+    })
   .then(data => {
     const mapped = data.map(p => ({
       nombre: p.name?.common || 'Desconocido',
