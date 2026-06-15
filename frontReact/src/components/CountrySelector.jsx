@@ -6,6 +6,8 @@ export default function CountrySelector(){
   const [filtrados, setFiltrados] = useState([])
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
+  const [usedUrl, setUsedUrl] = useState('')
+  const [count, setCount] = useState(null)
   const navigate = useNavigate()
   const API_KEY = process.env.REACT_APP_RESTCOUNTRIES_API_KEY;
 
@@ -25,8 +27,10 @@ export default function CountrySelector(){
     ? `${backendApi}/api/external/paises`
     : 'https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population'
 
+  setUsedUrl(url)
   fetch(url)
     .then(response => {
+      setUsedUrl(prev => `${url} (status ${response.status})`)
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
@@ -69,6 +73,8 @@ export default function CountrySelector(){
       }))
       setPaises(mapped)
       setFiltrados(mapped)
+      setCount(mapped.length)
+      console.log('[CountrySelector] países cargados:', mapped.length)
     })
     .catch(err => { 
       console.error(err); 
