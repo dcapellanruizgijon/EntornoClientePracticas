@@ -1,51 +1,38 @@
 services:
-  # Base de datos PostgreSQL
-  postgresql:
-    image: postgres:15
-    container_name: app-db-postgres
+  # Cambiar a MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: app-db-mysql
     restart: unless-stopped
     environment:
-      POSTGRES_DB: nuestrosPaises
-      POSTGRES_USER: UsuarioAdmin
-      POSTGRES_PASSWORD: admin123
+      MYSQL_DATABASE: nuestrosPaises
+      MYSQL_USER: UsuarioAdmin
+      MYSQL_PASSWORD: admin123
+      MYSQL_ROOT_PASSWORD: root123
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U UsuarioAdmin -d nuestrosPaises"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Backend Spring Boot
   backend:
     build: .
     container_name: app-spring
     restart: unless-stopped
     depends_on:
-      postgresql:
+      mysql:
         condition: service_healthy
     ports:
       - "8080:8080"
-    env_file:
-      - .env
     environment:
-      SERVER_PORT: 8080
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/nuestrosPaises
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nuestrosPaises?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: UsuarioAdmin
       SPRING_DATASOURCE_PASSWORD: admin123
-      API_KEY: ${API_KEY}
-
-  # Frontend Angular con Nginx
-  frontend:
-    build: ../paisesFront
-    container_name: app-angular
-    restart: unless-stopped
-    ports:
-      - "4200:80"
-    depends_on:
-      - backend
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
 
 volumes:
-  postgres_data:
+  mysql_data:
