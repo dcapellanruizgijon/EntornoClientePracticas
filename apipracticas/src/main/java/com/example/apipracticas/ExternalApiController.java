@@ -22,20 +22,30 @@ public class ExternalApiController {
 
     @GetMapping("/paises")
     public ResponseEntity<Object> getPaises() {
-        RestTemplate rt = new RestTemplate();
+        // Configurar RestTemplate con timeouts cortos
+        org.springframework.http.client.SimpleClientHttpRequestFactory rf = new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        rf.setConnectTimeout(5000);
+        rf.setReadTimeout(10000);
+        RestTemplate rt = new RestTemplate(rf);
+
         Exception lastEx = null;
         for (String url : CANDIDATE_URLS) {
             try {
-                Object[] resp = rt.getForObject(url, Object[].class);
-                if (resp != null && resp.length > 0) {
-                    return ResponseEntity.ok().body(resp);
+                org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                headers.set("Accept", "application/json");
+                // Algunos servidores rechazan requests sin User-Agent
+                headers.set("User-Agent", "Mozilla/5.0 (compatible; cliente-practicas/1.0)");
+                org.springframework.http.HttpEntity<Void> request = new org.springframework.http.HttpEntity<>(headers);
+
+                org.springframework.http.ResponseEntity<Object[]> resp = rt.exchange(url, HttpMethod.GET, request, Object[].class);
+                if (resp != null && resp.getStatusCode().is2xxSuccessful() && resp.getBody() != null && resp.getBody().length > 0) {
+                    return ResponseEntity.ok().body(resp.getBody());
                 }
             } catch (Exception ex) {
                 lastEx = ex;
-                // probar siguiente URL
+                // intentar siguiente URL
             }
         }
-        // Si llegamos aquí no obtuvimos datos válidos
         if (lastEx != null) lastEx.printStackTrace();
         return ResponseEntity.status(502).body("[]");
     }
