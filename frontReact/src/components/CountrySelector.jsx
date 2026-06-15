@@ -16,8 +16,16 @@ export default function CountrySelector(){
   const cargar = () => {
   setCargando(true)
   
-  // URL correcta de la v3.1 (sin 'api.' al inicio)
-  fetch('https://restcountries.com/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population')
+  // Preferir el proxy del backend para evitar bloqueos CORS.
+  // Construimos la URL del backend a partir de Vite env si está disponible.
+  const backendApi = (import.meta.env && import.meta.env.VITE_API_URL)
+    ? import.meta.env.VITE_API_URL.replace(/\/api\/paises\/?$/, '')
+    : ''
+  const url = backendApi
+    ? `${backendApi}/api/external/paises`
+    : 'https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population'
+
+  fetch(url)
     .then(response => {
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
