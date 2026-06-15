@@ -14,6 +14,25 @@ export default function PaisForm(){
       setCargando(true)
       getById(id).then(res => setPais(res.data)).catch(err => setMensaje('Error al cargar país')).finally(()=>setCargando(false))
     }
+    else {
+      // Si venimos de la selección externa, recuperar país guardado en sessionStorage
+      try {
+        const sel = sessionStorage.getItem('paisSeleccionado')
+        if(sel){
+          const p = JSON.parse(sel)
+          setPais(prev => ({
+            ...prev,
+            nombre: p.nombre || prev.nombre,
+            bandera: p.banderas || prev.bandera,
+            zona: p.region || prev.zona,
+            motivoViaje: prev.motivoViaje,
+            notasPersonales: prev.notasPersonales
+          }))
+          // limpiar para evitar reutilizarlo accidentalmente
+          sessionStorage.removeItem('paisSeleccionado')
+        }
+      } catch(e){/* ignore */}
+    }
   }, [id])
 
   const handleChange = (e) => {

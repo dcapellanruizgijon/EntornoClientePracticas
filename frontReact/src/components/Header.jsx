@@ -15,6 +15,9 @@ export default function Header() {
               <Link className="nav-link" to="/">Listado</Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/lista-paises">Buscar países</Link>
+            </li>
+            <li className="nav-item">
               <Link className="btn btn-outline-light ms-2" to="/agregar-pais">Añadir país</Link>
             </li>
           </ul>
