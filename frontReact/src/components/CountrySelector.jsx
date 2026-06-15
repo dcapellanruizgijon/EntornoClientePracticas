@@ -14,33 +14,35 @@ export default function CountrySelector(){
     
 
   const cargar = () => {
-    setCargando(true)
-    fetch(
-  'https://api.restcountries.com/countries/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population',
-  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
-)
-       .then(response => {
+  setCargando(true)
+  
+  // URL correcta de la v3.1 (sin 'api.' al inicio)
+  fetch('https://restcountries.com/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population')
+    .then(response => {
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
       return response.json();
     })
-  .then(data => {
-    const mapped = data.map(p => ({
-      nombre: p.name?.common || 'Desconocido',
-      miembroOnu: p.unMember || false,
-      moneda: p.currencies ? Object.values(p.currencies)[0]?.name + ' (' + Object.values(p.currencies)[0]?.symbol + ')' : 'No disponible',
-      capital: p.capital?.[0] || 'No tiene capital',
-      region: p.region || 'Desconocida',
-      banderas: p.flags?.png || '',
-      poblacion: p.population || 0
-    }))
-        setPaises(mapped)
-        setFiltrados(mapped)
-      })
-      .catch(err => { console.error(err); setError('Error al cargar países') })
-      .finally(()=>setCargando(false))
-  }
+    .then(data => {
+      const mapped = data.map(p => ({
+        nombre: p.name?.common || 'Desconocido',
+        miembroOnu: p.unMember || false,
+        moneda: p.currencies ? Object.values(p.currencies)[0]?.name + ' (' + Object.values(p.currencies)[0]?.symbol + ')' : 'No disponible',
+        capital: p.capital?.[0] || 'No tiene capital',
+        region: p.region || 'Desconocida',
+        banderas: p.flags?.png || '',
+        poblacion: p.population || 0
+      }))
+      setPaises(mapped)
+      setFiltrados(mapped)
+    })
+    .catch(err => { 
+      console.error(err); 
+      setError('Error al cargar países') 
+    })
+    .finally(() => setCargando(false))
+}
 
   const buscar = (e) => {
     const t = e.target.value.toLowerCase().trim()
