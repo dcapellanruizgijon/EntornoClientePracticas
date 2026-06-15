@@ -33,13 +33,38 @@ export default function CountrySelector(){
       return response.json();
     })
     .then(data => {
-      const mapped = data.map(p => ({
-        nombre: p.name?.common || 'Desconocido',
+      // Normalizar respuesta: algunos proxys o errores devuelven objetos en vez de arrays
+      let list = data
+      if (!Array.isArray(list)) {
+        // si viene como string JSON
+        if (typeof list === 'string') {
+          try { list = JSON.parse(list) } catch(e) { /* ignore */ }
+        }
+        // si viene envuelto en { body: [...] } o { data: [...] }
+        if (!Array.isArray(list)) {
+          if (list && Array.isArray(list.body)) list = list.body
+          else if (list && Array.isArray(list.data)) list = list.data
+          else if (list && typeof list === 'object') {
+            // buscar la primera propiedad que sea array
+            for (const k of Object.keys(list)) {
+              if (Array.isArray(list[k])) { list = list[k]; break }
+            }
+          }
+        }
+      }
+
+      if (!Array.isArray(list)) {
+        console.error('Respuesta inesperada del endpoint de países:', data)
+        throw new Error('Respuesta inesperada del servicio de países')
+      }
+
+      const mapped = list.map(p => ({
+        nombre: p.name?.common || (p.name && (p.name.common || p.name)) || 'Desconocido',
         miembroOnu: p.unMember || false,
         moneda: p.currencies ? Object.values(p.currencies)[0]?.name + ' (' + Object.values(p.currencies)[0]?.symbol + ')' : 'No disponible',
-        capital: p.capital?.[0] || 'No tiene capital',
+        capital: Array.isArray(p.capital) ? p.capital[0] : (p.capital || 'No tiene capital'),
         region: p.region || 'Desconocida',
-        banderas: p.flags?.png || '',
+        banderas: (p.flags && (p.flags.png || p.flags.svg)) || '',
         poblacion: p.population || 0
       }))
       setPaises(mapped)
