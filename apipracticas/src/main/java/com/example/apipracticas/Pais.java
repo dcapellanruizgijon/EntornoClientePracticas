@@ -24,13 +24,13 @@ public class Pais {
     @Column
     private String zona;
     @Column
-    private Integer presupuesto;
+    private Double presupuesto;
     @Column
     private Integer prioridad;
     @Column
     private String notasPersonales;
 
-    public Pais(Integer id, String nombre, String bandera, String motivoViaje, String zona, Integer presupuesto,
+    public Pais(Integer id, String nombre, String bandera, String motivoViaje, String zona, Double presupuesto,
             Integer prioridad, String notasPersonales) {
         this.id = id;
         this.nombre = nombre;
@@ -86,11 +86,11 @@ public class Pais {
         this.zona = zona;
     }
 
-    public Integer getPresupuesto() {
+    public Double getPresupuesto() {
         return presupuesto;
     }
 
-    public void setPresupuesto(Integer presupuesto) {
+    public void setPresupuesto(Double presupuesto) {
         this.presupuesto = presupuesto;
     }
 
