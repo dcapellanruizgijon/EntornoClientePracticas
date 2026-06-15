@@ -18,67 +18,35 @@ export default function CountrySelector(){
   const cargar = () => {
   setCargando(true)
   
-  // Preferir el proxy del backend para evitar bloqueos CORS.
-  // Construimos la URL del backend a partir de Vite env si está disponible.
-  const backendApi = (import.meta.env && import.meta.env.VITE_API_URL)
-    ? import.meta.env.VITE_API_URL.replace(/\/api\/paises\/?$/, '')
-    : ''
-  const url = backendApi
-    ? `${backendApi}/api/external/paises`
-    : 'https://restcountries.com/v5.1/all?fields=name,unMember,currencies,capital,region,flags,population'
-
-  setUsedUrl(url)
-  fetch(url)
+  // Usar un proxy CORS público (allorigins.win)
+  const targetUrl = 'https://restcountries.com/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population';
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+  
+  fetch(proxyUrl)
     .then(response => {
-      setUsedUrl(prev => `${url} (status ${response.status})`)
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
       return response.json();
     })
     .then(data => {
-      // Normalizar respuesta: algunos proxys o errores devuelven objetos en vez de arrays
-      let list = data
-      if (!Array.isArray(list)) {
-        // si viene como string JSON
-        if (typeof list === 'string') {
-          try { list = JSON.parse(list) } catch(e) { /* ignore */ }
-        }
-        // si viene envuelto en { body: [...] } o { data: [...] }
-        if (!Array.isArray(list)) {
-          if (list && Array.isArray(list.body)) list = list.body
-          else if (list && Array.isArray(list.data)) list = list.data
-          else if (list && typeof list === 'object') {
-            // buscar la primera propiedad que sea array
-            for (const k of Object.keys(list)) {
-              if (Array.isArray(list[k])) { list = list[k]; break }
-            }
-          }
-        }
-      }
-
-      if (!Array.isArray(list)) {
-        console.error('Respuesta inesperada del endpoint de países:', data)
-        throw new Error('Respuesta inesperada del servicio de países')
-      }
-
-      const mapped = list.map(p => ({
-        nombre: p.name?.common || (p.name && (p.name.common || p.name)) || 'Desconocido',
+      // data ya es el array de países
+      const mapped = data.map(p => ({
+        nombre: p.name?.common || 'Desconocido',
         miembroOnu: p.unMember || false,
         moneda: p.currencies ? Object.values(p.currencies)[0]?.name + ' (' + Object.values(p.currencies)[0]?.symbol + ')' : 'No disponible',
         capital: Array.isArray(p.capital) ? p.capital[0] : (p.capital || 'No tiene capital'),
         region: p.region || 'Desconocida',
-        banderas: (p.flags && (p.flags.png || p.flags.svg)) || '',
+        banderas: p.flags?.png || '',
         poblacion: p.population || 0
       }))
       setPaises(mapped)
       setFiltrados(mapped)
-      setCount(mapped.length)
-      console.log('[CountrySelector] países cargados:', mapped.length)
+      console.log('Países cargados:', mapped.length)
     })
     .catch(err => { 
       console.error(err); 
-      setError('Error al cargar países') 
+      setError('Error al cargar países. Intenta de nuevo más tarde.') 
     })
     .finally(() => setCargando(false))
 }
