@@ -1,11 +1,53 @@
-// Import Bootstrap's SCSS so we can override variables if needed
+// Custom theme variables (override Bootstrap before importing)
+$primary: #6f42c1; // purple
+$secondary: #0ea5a4; // teal
+$success: #10b981;
+$info: #60a5fa;
+$danger: #ef4444;
+$warning: #f59e0b;
+$body-bg: #0b1220; // dark background
+$body-color: #e6eef8; // light text
+$link-color: $primary;
+
+// Use a compact navbar and card style
+$navbar-padding-y: .5rem;
+$nav-link-padding-y: .4rem;
+
 @import "../node_modules/bootstrap/scss/bootstrap";
 
 body {
-  background: #f8f9fa;
+  background: linear-gradient(180deg, #071024 0%, #0b1220 100%);
+  color: $body-color;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.navbar-custom {
+  background: linear-gradient(90deg, rgba(111,66,193,0.95), rgba(14,165,164,0.95));
+}
+
+.card-custom {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: $body-color;
 }
 
 .hover-card:hover{
   transform: translateY(-6px);
   transition: transform 0.15s ease-in-out;
+  box-shadow: 0 8px 20px rgba(11,18,32,0.6);
+}
+
+.btn-primary {
+  background-image: linear-gradient(90deg, $primary, darken($primary,7%));
+  border: none;
+}
+
+.btn-outline-secondary {
+  color: $secondary;
+  border-color: rgba(14,165,164,0.5);
+}
+
+footer.site-footer {
+  padding: 1.5rem 0;
+  color: rgba(230,238,248,0.8);
 }
