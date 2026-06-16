@@ -15,9 +15,9 @@ export default function CountrySelector(){
     setError('')
     try {
       const response = await fetch(
-        'https://api.restcountries.com/countries/v5?response_fields=names.common%2Cclassification.un_member%2Ccurrencies%2Ccapitals%2Cregion%2Cflag.url_png%2Cflag.emoji%2Cpopulation&pretty=1',
-        { headers: { 'Authorization': 'rc_live_3456fff8e4804596b83abcebd6b9cfa1' } }
-      )
+  'https://api.restcountries.com/countries/v5?response_fields=names.common,classification.un_member,currencies,capitals,region,flag.url_png,flag.emoji,population',
+  { headers: { 'Authorization': 'Bearer rc_live_3456fff8e4804596b83abcebd6b9cfa1' } }
+)
       const data = await response.json()
 
       const mapped = (Array.isArray(data) ? data : []).map(p => {
