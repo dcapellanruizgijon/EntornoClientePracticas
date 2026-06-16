@@ -7,7 +7,6 @@ export default function PaisForm(){
   const navigate = useNavigate()
   const [pais, setPais] = useState({ nombre:'', bandera:'', motivoViaje:'', zona:'', presupuesto:0, prioridad:1, notasPersonales:'' })
   const [cargando, setCargando] = useState(false)
-  const [allowEditName, setAllowEditName] = useState(true)
   const [mensaje, setMensaje] = useState('')
 
   useEffect(() => {
@@ -34,11 +33,6 @@ export default function PaisForm(){
         }
       } catch(e){}
     }
-  }, [id])
-
-  // Cuando hay un id (editar existente), por defecto no permitir cambiar el nombre
-  useEffect(() => {
-    setAllowEditName(!id)
   }, [id])
 
   const handleChange = (e) => {
@@ -68,17 +62,9 @@ export default function PaisForm(){
         <div className="mb-3">
           <label className="form-label">Nombre</label>
           {id && (
-            <div className="form-text mb-2">Al editar un país guardado, el nombre está bloqueado por defecto.</div>
+            <div className="form-text mb-2">El nombre no se puede editar para países ya guardados.</div>
           )}
-          <div className="d-flex gap-2 align-items-center mb-2">
-            {id && (
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" id="allowEditName" checked={allowEditName} onChange={e=>setAllowEditName(e.target.checked)} />
-                <label className="form-check-label" htmlFor="allowEditName">Permitir editar nombre</label>
-              </div>
-            )}
-          </div>
-          <input name="nombre" value={pais.nombre} onChange={handleChange} className="form-control" required disabled={id && !allowEditName} />
+          <input name="nombre" value={pais.nombre} onChange={handleChange} className="form-control" required disabled={!!id} />
         </div>
 
         <div className="mb-3">
