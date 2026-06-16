@@ -17,11 +17,11 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 
-// ✅ CORREGIDO: Quitar el slash '/' - ahora usamos string vacío o solo el ID
-export const getAll = () => api.get('')      // ← Sin slash, solo string vacío
-export const getById = (id) => api.get(`/${id}`)  // ← Esto está bien, añade el ID
-export const createPais = (pais) => api.post('', pais)  // ← Sin slash
-export const updatePais = (id, pais) => api.put(`/${id}`, pais)  // ← Esto está bien
-export const deletePais = (id) => api.delete(`/${id}`)  // ← Esto está bien
+
+export const getAll = () => api.get('')      
+export const getById = (id) => api.get(`/${id}`)
+export const createPais = (pais) => api.post('', pais) 
+export const updatePais = (id, pais) => api.put(`/${id}`, pais) 
+export const deletePais = (id) => api.delete(`/${id}`)  
 
 export default api

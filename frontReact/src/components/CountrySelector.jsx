@@ -59,7 +59,7 @@ export default function CountrySelector() {
     setCargando(true)
     setError('')
     try {
-      // La API tiene 249 países, límite máx 100 → 3 páginas
+      // La API tiene 249 países, límite máx 100, 3 páginas
       const [p1, p2, p3] = await Promise.all([
         fetchPagina(0),
         fetchPagina(100),
