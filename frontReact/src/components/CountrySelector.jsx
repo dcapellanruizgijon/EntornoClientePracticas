@@ -18,11 +18,8 @@ export default function CountrySelector(){
   const cargar = () => {
   setCargando(true)
   
-  // Usar un proxy CORS público (allorigins.win)
-  const targetUrl = 'https://restcountries.com/v3.1/all?fields=name,unMember,currencies,capital,region,flags,population';
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-  
-  fetch(proxyUrl)
+  // Usar Country API (gratuita, sin CORS)
+  fetch('https://countryapi.io/api/all')
     .then(response => {
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
@@ -30,19 +27,22 @@ export default function CountrySelector(){
       return response.json();
     })
     .then(data => {
-      // data ya es el array de países
-      const mapped = data.map(p => ({
-        nombre: p.name?.common || 'Desconocido',
-        miembroOnu: p.unMember || false,
-        moneda: p.currencies ? Object.values(p.currencies)[0]?.name + ' (' + Object.values(p.currencies)[0]?.symbol + ')' : 'No disponible',
-        capital: Array.isArray(p.capital) ? p.capital[0] : (p.capital || 'No tiene capital'),
+      // La API devuelve un objeto con claves = códigos de país
+      // Ej: { "ES": { name: "Spain", ... }, "FR": { ... } }
+      const paisesArray = Object.values(data);
+      
+      const mapped = paisesArray.map(p => ({
+        nombre: p.name || 'Desconocido',
+        miembroOnu: false, // Esta API no da ese dato
+        moneda: p.currency || 'No disponible',
+        capital: p.capital || 'No tiene capital',
         region: p.region || 'Desconocida',
-        banderas: p.flags?.png || '',
+        banderas: p.flag || '',
         poblacion: p.population || 0
       }))
+      
       setPaises(mapped)
       setFiltrados(mapped)
-      console.log('Países cargados:', mapped.length)
     })
     .catch(err => { 
       console.error(err); 
