@@ -6,50 +6,57 @@ export default function CountrySelector(){
   const [filtrados, setFiltrados] = useState([])
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
-  const [usedUrl, setUsedUrl] = useState('')
-  const [count, setCount] = useState(null)
   const navigate = useNavigate()
-  const API_KEY = process.env.REACT_APP_RESTCOUNTRIES_API_KEY;
 
   useEffect(()=>{ cargar() }, [])
 
-    
+  const cargar = async () => {
+    setCargando(true)
+    setError('')
+    try {
+      const response = await fetch(
+        'https://api.restcountries.com/countries/v5?response_fields=names.common%2Cclassification.un_member%2Ccurrencies%2Ccapitals%2Cregion%2Cflag.url_png%2Cflag.emoji%2Cpopulation&pretty=1',
+        { headers: { 'Authorization': 'Bearer rc_live_3456fff8e4804596b83abcebd6b9cfa1' } }
+      )
+      const data = await response.json()
 
-  const cargar = () => {
-  setCargando(true)
-  
-  // Usar Country API (gratuita, sin CORS)
-  fetch('https://countryapi.io/api/all')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      // La API devuelve un objeto con claves = códigos de país
-      // Ej: { "ES": { name: "Spain", ... }, "FR": { ... } }
-      const paisesArray = Object.values(data);
-      
-      const mapped = paisesArray.map(p => ({
-        nombre: p.name || 'Desconocido',
-        miembroOnu: false, // Esta API no da ese dato
-        moneda: p.currency || 'No disponible',
-        capital: p.capital || 'No tiene capital',
-        region: p.region || 'Desconocida',
-        banderas: p.flag || '',
-        poblacion: p.population || 0
-      }))
-      
+      const mapped = (Array.isArray(data) ? data : []).map(p => {
+        const nombre = p.names?.common || p.names?.official || p.name || 'Desconocido'
+        const miembroOnu = p.classification?.un_member ?? p.classification?.unMember ?? p.unMember ?? false
+
+        let moneda = 'No disponible'
+        if (p.currencies) {
+          const first = Array.isArray(p.currencies) ? p.currencies[0] : Object.values(p.currencies)[0]
+          if (first) {
+            moneda = first.name ? `${first.name}${first.symbol ? ' ('+first.symbol+')' : ''}` : (first.symbol || String(first))
+          }
+        }
+
+        const capital = Array.isArray(p.capitals) ? (p.capitals[0]?.name || p.capitals[0]) : (p.capital || 'No tiene capital')
+        const region = p.region || 'Desconocida'
+        const banderas = p.flag?.url_png || p.flag?.url_svg || p.flag?.emoji || p.flags?.png || ''
+        const poblacion = p.population ?? 0
+
+        return {
+          nombre,
+          miembroOnu,
+          moneda,
+          capital,
+          region,
+          banderas,
+          poblacion
+        }
+      })
+
       setPaises(mapped)
       setFiltrados(mapped)
-    })
-    .catch(err => { 
-      console.error(err); 
-      setError('Error al cargar países. Intenta de nuevo más tarde.') 
-    })
-    .finally(() => setCargando(false))
-}
+    } catch (err) {
+      console.error(err)
+      setError('Error al cargar países')
+    } finally {
+      setCargando(false)
+    }
+  }
 
   const buscar = (e) => {
     const t = e.target.value.toLowerCase().trim()
